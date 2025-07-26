@@ -129,7 +129,7 @@
     <script>
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
-      url = `http://secure.geonames.org/getJSON?geonameId=${id}&username=andrehmf23`;
+      url = `https://secure.geonames.org/getJSON?geonameId=${id}&username=andrehmf23`;
       fetch(url)
         .then(res => res.json())
         .then(data => {

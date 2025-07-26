@@ -41,7 +41,7 @@
         return;
         }
 
-        fetch(`http://secure.geonames.org/searchJSON?q=${encodeURIComponent(query)}&maxRows=5&username=andrehmf23`)
+        fetch(`https://secure.geonames.org/searchJSON?q=${encodeURIComponent(query)}&maxRows=5&username=andrehmf23`)
         .then(response => response.json())
         .then(data => {
             const results = data.geonames;
