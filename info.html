@@ -56,7 +56,7 @@
           <label class="center tag">Temperatura</label>
           <div class="row">
             <div id="weatherContainer" class="weather-grid">
-              <table border="1">
+              <table>
                 <thead>
                   <tr>
                     <th>Data</th>
@@ -129,7 +129,7 @@
     <script>
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
-      url = `http://api.geonames.org/getJSON?geonameId=${id}&username=andrehmf23`;
+      url = `http://secure.geonames.org/getJSON?geonameId=${id}&username=andrehmf23`;
       fetch(url)
         .then(res => res.json())
         .then(data => {
