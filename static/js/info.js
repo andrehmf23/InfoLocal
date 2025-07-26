@@ -243,6 +243,9 @@ getEconomyData(
     "SP.POP.TOTL.FE.IN",
     "SP.POP.TOTL"
   ]).then(() => {
+    
+    console.log("allData: ", allData);
+    
     // Inicialização
     chartECONOMY = createChartLine(allData["NY.GDP.MKTP.CD"], "NY.GDP.MKTP.CD", 'bar', 'chartECONOMY');
     //console.log("População masculina: ", allData["SP.POP.TOTL.MA.IN"]);
