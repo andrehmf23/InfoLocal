@@ -1,0 +1,56 @@
+:root {
+    --primary-color: #00bf63;
+    --secondary-color: #6c757d;
+    --tertiary-color: #00984e;
+    --quaternary-color: #4f565c;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    height: 90px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+main {
+    display: flex;
+    flex: 8;
+    align-items: center;
+    justify-content: center;
+}
+
+footer {
+    display: flex;
+    flex: 2;
+    align-items: center;
+    justify-content: center;
+}
+
+.app {
+    height: 60px;
+    width: 60px;
+    transition: transform 0.3s ease-in-out;
+    border: none;
+}
+
+.app:hover {
+    transform: scale(1.1);
+}
+
+.app:active {
+    transform: scale(0.9);
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="static/css/base.css">
+    <link rel="stylesheet" href="static/css/index.css">
+    <link rel="icon" type="images/png" href="static/images/app.png">
+    <title>InfoLocal</title>
+</head>
+<body>
+    <header>
+        <a href="/"><img class="app" src="static/images/app.png" alt=""></a>
+    </header>
+    <main>
+        <div class="box">
+            <div>
+                <span class="t1">Info</span>
+                <span class="t2">Local</span>
+            </div>
+            <div class="input-wrapper">
+                <input type="text" id="search" name="q" placeholder="Digite nome do local..." autocomplete="off" />
+                <ul id="suggestions"></ul>
+            </div>
+        </div>
+
+    </main>
+    <footer>
+
+
+    </footer>
+
+    <script>
+    const input = document.getElementById('search');
+    const suggestions = document.getElementById('suggestions');
+
+    input.addEventListener('input', async () => {
+        const query = input.value.trim();
+
+        if (query === '') {
+        suggestions.innerHTML = '';
+        return;
+        }
+
+        fetch(`http://api.geonames.org/searchJSON?q=${encodeURIComponent(query)}&maxRows=5&username=andrehmf23`)
+        .then(response => response.json())
+        .then(data => {
+            const results = data.geonames;
+            console.log(results);
+
+            suggestions.innerHTML = '';
+            results.forEach(entity => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = `info.html?id=${encodeURIComponent(entity.geonameId)}`;
+            a.textContent = `${entity.name} [${entity.fclName}]`;
+            li.appendChild(a);
+            suggestions.appendChild(li);
+            });
+        })
+        .catch(erro => {
+            console.error("Erro ao buscar dados:", erro);
+        });
+    });
+    </script>
+</body>
+</html>

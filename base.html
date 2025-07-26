@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="static/css/base.css">
+    <link rel="icon" type="images/png" href="{% static 'images/app.png' %}">
+    <title>InfoLocal</title>
+    {% block head %}
+    
+    {% endblock head %}
+</head>
+<body>
+    <header>
+        <a href="/"><img class="app" src="{% static "images/app.png" %}" alt=""></a>
+    </header>
+    <main>
+
+        {% block main %}
+        
+        {% endblock main %}
+
+    </main>
+    <footer>
+
+        {% block footer %}
+
+        {% endblock footer %}
+
+    </footer>
+
+    {% block script %}
+    {% endblock script %}
+</body>
+</html>
