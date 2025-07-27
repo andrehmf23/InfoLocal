@@ -1,212 +1,229 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="static/css/base.css">
-    <link rel="icon" type="images/png" href="static/images/app.png">
-    <title>InfoLocal</title>
-    <link rel="stylesheet" href="static/css/info.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-</head>
-<body>
-    <header>
-        <a href="/"><img class="app" src="static/images/app.png" alt=""></a>
-    </header>
-    <main>
+  <!DOCTYPE html>
+  <html lang="pt-br">
+  <head>
+      <meta charset="UTF-8">
+      <link rel="stylesheet" href="static/css/base.css">
+      <link rel="icon" type="images/png" href="static/images/app.png">
+      <title>InfoLocal</title>
+      <link rel="stylesheet" href="static/css/info.css">
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  </head>
+  <body>
+      <header>
+          <a href="/"><img class="app" src="static/images/app.png" alt=""></a>
+      </header>
+      <main>
 
-      <div class="box">
+        <div class="box">
 
-        <span class="title" id="title">{{result.name}}</span>
+          <span class="title" id="title">[titulo]</span>
 
-        <div class="row">
-          
-          <div class="column">
-            <span class="inf" id="type">Tipo: {{result.fclName}}</span>
-            <span class="inf" id="description">Descrição: {{result.fcodeName}}</span>
-            <span class="inf" id="elevation">Altitude: {{result.srtm3}} metros</span>
-            <div class="content">
-              <span class="tpol">População: </span>
-              <span class="pol" id="population">{{result.population}}</span>
-            </div>
-            <a href="https://{{result.wikipediaURL}}" target="_blank" class="more">Veja mais</a>
-          </div>
-
-          
-          <div class="column">
-              <div id="map" style="height: 400px; width: 500px;"></div>
-              <div class="local">
-                <span id="lat">Latitude: {{result.lat}}</span>
-                <span id="lng">Longitude: {{result.lng}}</span>
-              </div>
-            </div>
+          <div class="row">
             
             <div class="column">
-              <div>
-                <span class="inf" id="countryCode">{{result.countryCode}}</span>
-              </div>
+              <span class="inf" id="type">[Tipo]</span>
+              <span class="inf" id="description">[Descrição]</span>
+              <span class="inf" id="elevation">[Altitude]</span>
               <div class="content">
-                <img id="flag" src="https://flagcdn.com/w320/{{ result.countryCode | lower }}.png" alt="Bandeira de {{ result.countryCode }}" width="300">
+                <span class="tpol">População: </span>
+                <span class="pol" id="population">[População]</span>
+              </div>
+              <a href="" target="_blank" class="more" id="more">Veja mais</a>
+            </div>
+
+            
+            <div class="column">
+                <div id="map" style="height: 400px; width: 500px;"></div>
+                <div class="local">
+                  <span id="lat">Latitude: {{result.lat}}</span>
+                  <span id="lng">Longitude: {{result.lng}}</span>
+                </div>
+              </div>
+              
+              <div class="column">
+                <div>
+                  <span class="inf" id="countryCode">{{result.countryCode}}</span>
+                </div>
+                <div class="content">
+                  <img id="flag" src="https://flagcdn.com/w320/{{ result.countryCode | lower }}.png" alt="Bandeira de {{ result.countryCode }}" width="300">
+                </div>
+              </div>
+
+          </div>
+
+          <div class="column">
+            <label class="center tag">Temperatura</label>
+            <div class="row">
+              <div id="weatherContainer" class="weather-grid">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th>Temp. Máxima</th>
+                      <th>Temp. Mínima</th>
+                    </tr>
+                  </thead>
+                  <tbody id="weatherTableBody">
+                    <tr><td colspan="3">Carregando...</td></tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-
-        </div>
-
-        <div class="column">
-          <label class="center tag">Temperatura</label>
-          <div class="row">
-            <div id="weatherContainer" class="weather-grid">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Temp. Máxima</th>
-                    <th>Temp. Mínima</th>
-                  </tr>
-                </thead>
-                <tbody id="weatherTableBody">
-                  <tr><td colspan="3">Carregando...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div class="barra-horizontal">
-          <span>Estatística do país</span>
-        </div>
-        
-
-        <div class="center">
-          <canvas id="chartNATALITYandMORTALITY" width="1200" height="300"></canvas>
-        </div>
-        
-        <div class="row">
-          <div class="column">
-            <label class="center tag">População masculina e feminina</label>
-            <canvas id="chartGENRE" width="500" height="300"></canvas>
-          </div>
-          <div class="column">
-            <label class="center tag">População total</label>
-            <canvas id="chartPOPULATION" width="800" height="300"></canvas>
-          </div>
-        </div>
-
-        <div class="center column">
-          <form id="indicatorFormECONOMY" class="indicatorForm">
-            <label class="gray"><input type="radio" name="indicator" value="NY.GDP.MKTP.CD" checked> PIB total (US$ corrente)</label><br>
-            <label class="purple"><input type="radio" name="indicator" value="NY.GNP.PCAP.CD"> PNB per capita (US$ corrente)</label><br>
-            <label class="darkgreen"><input type="radio" name="indicator" value="SL.UEM.TOTL.ZS"> Taxa de desemprego (%)</label><br>
-          </form>
-          <canvas id="chartECONOMY" width="1000" height="250"></canvas>
-        </div>
-
-        <div class="row">
-          <div class="center column">
-            <form id="indicatorFormEDUCATIONandHEALTH" class="indicatorForm">
-                <label class="orange"><input type="radio" name="indicator" value="SE.XPD.TOTL.GD.ZS" checked> Despesas com educação (% do PIB)</label><br>
-                <label class="red"><input type="radio" name="indicator" value="SH.XPD.CHEX.GD.ZS"> Despesas com saúde (% do PIB)</label><br>
-            </form>
-            <canvas id="chartEDUCATIONandHEALTH" width="600" height="300"></canvas>
           </div>
 
-          <div class="center column">
-            <form id="indicatorFormAMBIENTandENERGY" class="indicatorForm">
-                <label class="darkyellow"><input type="radio" name="indicator" value="EG.USE.ELEC.KH.PC" checked> Consumo de eletricidade per capita (kWh)</label><br>
-                <label class="green"><input type="radio" name="indicator" value="AG.LND.FRST.ZS"> Cobertura florestal (% da área terrestre)</label><br>
-            </form>
-            <canvas id="chartAMBIENTandENERGY" width="600" height="300"></canvas>
+          <div class="barra-horizontal">
+            <span>Estatística do país</span>
           </div>
-        </div>
-        <br>
-      </div>
-    </main>
-    <footer>
-
-    </footer>
-
-
-    <script>
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get('id');
-      url = `https://secure.geonames.org/getJSON?geonameId=${id}&username=andrehmf23`;
-      fetch(url)
-        .then(res => res.json())
-        .then(data => {
-          console.log(data);
-          document.getElementById('title').textContent = data.name + ', ' + data.countryName;
-          document.getElementById('type').textContent = "Tipo: " + data.fclName;
-          document.getElementById('description').textContent = "Descrição: " + data.fcodeName;
-          document.getElementById('elevation').textContent = "Altura: " + data.srtm3 + " m";
-          document.getElementById('population').textContent = data.population;
-          document.getElementById('lat').textContent = "Lat: " + data.lat;
-          document.getElementById('lng').textContent = "Lng: " + data.lng;
-          document.getElementById('countryCode').textContent = "Código do País: " + data.countryCode;
-
-          document.getElementById('flag').src = 'https://flagcdn.com/w320/' + data.countryCode.toLowerCase() + '.png';
-
-          localStorage.setItem("lat", data.lat);
-          localStorage.setItem("lng", data.lng);
-
-          localStorage.setItem("countryCode", data.countryCode);
           
 
-        })
-        .catch(erro => {
-          console.error("Erro ao buscar dados:", erro);
-        });
+          <div class="center">
+            <canvas id="chartNATALITYandMORTALITY" width="1200" height="300"></canvas>
+          </div>
+          
+          <div class="row">
+            <div class="column">
+              <label class="center tag">População masculina e feminina</label>
+              <canvas id="chartGENRE" width="500" height="300"></canvas>
+            </div>
+            <div class="column">
+              <label class="center tag">População total</label>
+              <canvas id="chartPOPULATION" width="800" height="300"></canvas>
+            </div>
+          </div>
 
-    </script>
+          <div class="center column">
+            <form id="indicatorFormECONOMY" class="indicatorForm">
+              <label class="gray"><input type="radio" name="indicator" value="NY.GDP.MKTP.CD" checked> PIB total (US$ corrente)</label><br>
+              <label class="purple"><input type="radio" name="indicator" value="NY.GNP.PCAP.CD"> PNB per capita (US$ corrente)</label><br>
+              <label class="darkgreen"><input type="radio" name="indicator" value="SL.UEM.TOTL.ZS"> Taxa de desemprego (%)</label><br>
+            </form>
+            <canvas id="chartECONOMY" width="1000" height="250"></canvas>
+          </div>
 
-    <script src="static/js/info.js"></script>
+          <div class="row">
+            <div class="center column">
+              <form id="indicatorFormEDUCATIONandHEALTH" class="indicatorForm">
+                  <label class="orange"><input type="radio" name="indicator" value="SE.XPD.TOTL.GD.ZS" checked> Despesas com educação (% do PIB)</label><br>
+                  <label class="red"><input type="radio" name="indicator" value="SH.XPD.CHEX.GD.ZS"> Despesas com saúde (% do PIB)</label><br>
+              </form>
+              <canvas id="chartEDUCATIONandHEALTH" width="600" height="300"></canvas>
+            </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-      //graph
-      // Substitua pelos valores reais do país (ou cidade)
-      const lat = localStorage.getItem("lat");  // Exemplo: latitude do Brasil
-      const lon = localStorage.getItem("lng");  // Exemplo: longitude do Brasil
+            <div class="center column">
+              <form id="indicatorFormAMBIENTandENERGY" class="indicatorForm">
+                  <label class="darkyellow"><input type="radio" name="indicator" value="EG.USE.ELEC.KH.PC" checked> Consumo de eletricidade per capita (kWh)</label><br>
+                  <label class="green"><input type="radio" name="indicator" value="AG.LND.FRST.ZS"> Cobertura florestal (% da área terrestre)</label><br>
+              </form>
+              <canvas id="chartAMBIENTandENERGY" width="600" height="300"></canvas>
+            </div>
+          </div>
+          <br>
+        </div>
+      </main>
+      <footer>
 
-      const map = L.map('map').setView([lat, lon], 5); // 5 é o zoom (quanto menor, mais distante)
+      </footer>
 
-      // Tile Layer (fundo do mapa)
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-      }).addTo(map);
 
-      // Marcador no local
-      L.marker([lat, lon]).addTo(map)
-        .bindPopup('Você está vendo este local!')
-        .openPopup();
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="static/js/info.js"></script>
+      <script>
 
-      //const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-      const url = "https://api.open-meteo.com/v1/forecast?latitude=-10&longitude=-55&daily=temperature_2m_max,temperature_2m_min&timezone=auto";
+        const data = JSON.parse(localStorage.getItem('data'));
 
-      fetch(url)
-        .then(res => res.json())
-        .then(data => {
-          const dates = data.daily.time;
-          const maxTemps = data.daily.temperature_2m_max;
-          const minTemps = data.daily.temperature_2m_min;
+        console.log("Data: ",data);
 
-          const container = document.getElementById("weatherContainer");
-          container.innerHTML = ""; // Limpa "Carregando..."
+        document.getElementById('title').textContent = data.name + ', ' + data.countryName;
+        document.getElementById('type').textContent = "Tipo: " + data.fclName;
+        document.getElementById('description').textContent = "Descrição: " + data.fcodeName;
+        document.getElementById('elevation').textContent = "Altura: " + data.srtm3 + " m";
+        document.getElementById('population').textContent = data.population;
+        document.getElementById('lat').textContent = "Lat: " + data.lat;
+        document.getElementById('lng').textContent = "Lng: " + data.lng;
+        document.getElementById('countryCode').textContent = "Código do País: " + data.countryCode;
+        document.getElementById('more').href = "https://" + data.wikipediaURL;
 
-          for (let i = 0; i < dates.length; i++) {
-            const card = document.createElement("div");
-            card.className = "weather-card";
-            card.innerHTML = `
-              <div class="weather-date">${formatDate(dates[i])}</div>
-              <div><span class="temp-max">↑ ${maxTemps[i]}°C</span></div>
-              <div><span class="temp-min">↓ ${minTemps[i]}°C</span></div>
-            `;
-            container.appendChild(card);
-          }
-        });
+        document.getElementById('flag').src = 'https://flagcdn.com/w320/' + data.countryCode.toLowerCase() + '.png';
+        //graph
+        
+        const map = L.map('map').setView([data.lat, data.lng], 5); // 5 é o zoom (quanto menor, mais distante)
+        
+        // Tile Layer (fundo do mapa)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        // Marcador no local
+        L.marker([data.lat, data.lng]).addTo(map)
+          .bindPopup('Você está vendo este local!')
+          .openPopup();
+        
+        //const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+        const url = "https://api.open-meteo.com/v1/forecast?latitude=-10&longitude=-55&daily=temperature_2m_max,temperature_2m_min&timezone=auto";
+        
+        fetch(url)
+          .then(res => res.json())
+          .then(data => {
+            const dates = data.daily.time;
+            const maxTemps = data.daily.temperature_2m_max;
+            const minTemps = data.daily.temperature_2m_min;
+        
+            const container = document.getElementById("weatherContainer");
+            container.innerHTML = ""; // Limpa "Carregando..."
+        
+            for (let i = 0; i < dates.length; i++) {
+              const card = document.createElement("div");
+              card.className = "weather-card";
+              card.innerHTML = `
+                <div class="weather-date">${formatDate(dates[i])}</div>
+                <div><span class="temp-max">↑ ${maxTemps[i]}°C</span></div>
+                <div><span class="temp-min">↓ ${minTemps[i]}°C</span></div>
+              `;
+              container.appendChild(card);
+            }
+          });
+
         function formatDate(isoDate) {
           const [year, month, day] = isoDate.split("-");
           return `${day}/${month}`;
         }
-    </script>
-</body>
-</html>
+        
+        getEconomyData(
+        data.countryCode, 
+        [
+          "NY.GDP.MKTP.CD",
+          "SP.POP.TOTL",
+          "SL.UEM.TOTL.ZS",
+          "NY.GNP.PCAP.CD",
+          "SE.XPD.TOTL.GD.ZS",
+          "SH.XPD.CHEX.GD.ZS",
+          "EG.USE.ELEC.KH.PC",
+          "AG.LND.FRST.ZS",
+          "SP.DYN.CBRT.IN",
+          "SP.DYN.CDRT.IN",
+          "SP.POP.TOTL.MA.IN",
+          "SP.POP.TOTL.FE.IN",
+          "SP.POP.TOTL"
+        ]).then(() => {
+          
+          console.log("allData: ", allData);
+          
+          // Inicialização
+          chartECONOMY = createChartLine(allData["NY.GDP.MKTP.CD"], "NY.GDP.MKTP.CD", 'bar', 'chartECONOMY');
+          //console.log("População masculina: ", allData["SP.POP.TOTL.MA.IN"]);
+          chartGENRE = createChartPie('chartGENRE', 
+            ["Masculino", "Feminino"],
+            [allData["SP.POP.TOTL.MA.IN"][0].value, allData["SP.POP.TOTL.FE.IN"][0].value],
+            "População masculina e fe", 
+            ['rgb(255, 99, 132)', 'rgb(54, 162, 235)'],
+          );
+
+          chartPOPULATION = createChartLine(allData["SP.POP.TOTL"], "SP.POP.TOTL", 'line', 'chartPOPULATION');
+          chartEDUCATIONandHEALTH = createChartLine(allData["SE.XPD.TOTL.GD.ZS"], "SE.XPD.TOTL.GD.ZS", 'bar', 'chartEDUCATIONandHEALTH');
+          chartAMBIENTandENERGY = createChartLine(allData["EG.USE.ELEC.KH.PC"], "EG.USE.ELEC.KH.PC", 'scatter', 'chartAMBIENTandENERGY');
+          chartNATALITYandMORTALITY = createChartLines([allData["SP.DYN.CBRT.IN"], allData["SP.DYN.CDRT.IN"]], ["SP.DYN.CBRT.IN", "SP.DYN.CDRT.IN"], 'line', 'chartNATALITYandMORTALITY');
+      });
+      </script>
+  </body>
+  </html>

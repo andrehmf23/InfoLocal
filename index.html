@@ -50,10 +50,21 @@
             suggestions.innerHTML = '';
             results.forEach(entity => {
             const li = document.createElement('li');
-            const a = document.createElement('a');
-            a.href = `info.html?id=${encodeURIComponent(entity.geonameId)}`;
-            a.textContent = `${entity.name} [${entity.fclName}]`;
-            li.appendChild(a);
+            const button = document.createElement('button');
+            button.addEventListener('click', () => {
+                fetch(`https://secure.geonames.org/getJSON?geonameId=${entity.geonameId}&username=andrehmf23`)
+                .then(response => response.json())
+                .then(data => {
+                    localStorage.setItem('data', JSON.stringify(data));
+                    window.location.href = '/info.html';
+                })
+                .catch(erro => {
+                    console.error("Erro ao buscar dados:", erro);
+                });
+
+            })
+            button.textContent = `${entity.name} [${entity.fclName}]`;
+            li.appendChild(button);
             suggestions.appendChild(li);
             });
         })

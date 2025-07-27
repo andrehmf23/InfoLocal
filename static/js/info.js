@@ -85,6 +85,9 @@ async function getIndicatorData(countryCode, indicator) {
 
 async function getEconomyData(countryCode, indicators) {
 
+  console.log("countryCode: ", countryCode);
+  console.log("indicators: ", indicators);
+
   const promises = indicators.map(indicator => getIndicatorData(countryCode, indicator));
 
   const results = await Promise.all(promises);
@@ -224,40 +227,4 @@ document.getElementById('indicatorFormAMBIENTandENERGY').addEventListener('chang
     }
     chartAMBIENTandENERGY = createChartLine(allData[ind], ind, 'scatter', 'chartAMBIENTandENERGY');
   }
-});
-
-getEconomyData(
-  localStorage.getItem("countryCode"), 
-  [
-    "NY.GDP.MKTP.CD",
-    "SP.POP.TOTL",
-    "SL.UEM.TOTL.ZS",
-    "NY.GNP.PCAP.CD",
-    "SE.XPD.TOTL.GD.ZS",
-    "SH.XPD.CHEX.GD.ZS",
-    "EG.USE.ELEC.KH.PC",
-    "AG.LND.FRST.ZS",
-    "SP.DYN.CBRT.IN",
-    "SP.DYN.CDRT.IN",
-    "SP.POP.TOTL.MA.IN",
-    "SP.POP.TOTL.FE.IN",
-    "SP.POP.TOTL"
-  ]).then(() => {
-    
-    console.log("allData: ", allData);
-    
-    // Inicialização
-    chartECONOMY = createChartLine(allData["NY.GDP.MKTP.CD"], "NY.GDP.MKTP.CD", 'bar', 'chartECONOMY');
-    //console.log("População masculina: ", allData["SP.POP.TOTL.MA.IN"]);
-    chartGENRE = createChartPie('chartGENRE', 
-      ["Masculino", "Feminino"],
-      [allData["SP.POP.TOTL.MA.IN"][0].value, allData["SP.POP.TOTL.FE.IN"][0].value],
-      "População masculina e fe", 
-      ['rgb(255, 99, 132)', 'rgb(54, 162, 235)'],
-    );
-
-    chartPOPULATION = createChartLine(allData["SP.POP.TOTL"], "SP.POP.TOTL", 'line', 'chartPOPULATION');
-    chartEDUCATIONandHEALTH = createChartLine(allData["SE.XPD.TOTL.GD.ZS"], "SE.XPD.TOTL.GD.ZS", 'bar', 'chartEDUCATIONandHEALTH');
-    chartAMBIENTandENERGY = createChartLine(allData["EG.USE.ELEC.KH.PC"], "EG.USE.ELEC.KH.PC", 'scatter', 'chartAMBIENTandENERGY');
-    chartNATALITYandMORTALITY = createChartLines([allData["SP.DYN.CBRT.IN"], allData["SP.DYN.CDRT.IN"]], ["SP.DYN.CBRT.IN", "SP.DYN.CDRT.IN"], 'line', 'chartNATALITYandMORTALITY');
 });
