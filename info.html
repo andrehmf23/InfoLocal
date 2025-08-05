@@ -1,3 +1,6 @@
+  
+  
+  
   <!DOCTYPE html>
   <html lang="pt-br">
   <head>
@@ -47,6 +50,12 @@
                 </div>
                 <div class="content">
                   <img id="flag" src="https://flagcdn.com/w320/{{ result.countryCode | lower }}.png" alt="Bandeira de {{ result.countryCode }}" width="300">
+                </div>
+                <div>
+                  <span class="inf" id="countryCoin">[Código]</span>
+                </div>
+                <div>
+                  <span class="inf" id="countryCoinValue">[Código]</span>
                 </div>
               </div>
 
@@ -158,6 +167,33 @@
         L.marker([data.lat, data.lng]).addTo(map)
           .bindPopup('Você está vendo este local!')
           .openPopup();
+
+        fetch(`https://restcountries.com/v3.1/alpha/${data.countryCode}`)
+        .then(res => res.json())
+        .then(data => {
+
+          // Pega o objeto de moedas
+          const currencies = data[0]?.currencies;
+
+          console.log("currencies: ", currencies);
+    
+          // Pega o primeiro código de moeda dinamicamente
+          const currencyCode = Object.keys(currencies)[0];
+    
+          // Pega o nome e símbolo da moeda
+          const { name, symbol } = currencies[currencyCode];
+
+          document.getElementById('countryCoin').textContent = "Moeda: " + symbol + " (" + currencyCode + ")";
+          
+          fetch(`https://api.frankfurter.app/latest?from=${currencyCode}&to=USD`)
+          .then(res => res.json())
+          .then(data => {
+            data = data.rates.USD;
+            console.log("data: ", data);
+            document.getElementById('countryCoinValue').textContent = "Valor: " + data + "$";
+          });
+    
+        });
         
         //const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
         const url = "https://api.open-meteo.com/v1/forecast?latitude=-10&longitude=-55&daily=temperature_2m_max,temperature_2m_min&timezone=auto";
@@ -224,6 +260,9 @@
           chartAMBIENTandENERGY = createChartLine(allData["EG.USE.ELEC.KH.PC"], "EG.USE.ELEC.KH.PC", 'scatter', 'chartAMBIENTandENERGY');
           chartNATALITYandMORTALITY = createChartLines([allData["SP.DYN.CBRT.IN"], allData["SP.DYN.CDRT.IN"]], ["SP.DYN.CBRT.IN", "SP.DYN.CDRT.IN"], 'line', 'chartNATALITYandMORTALITY');
       });
+
+
+      
       </script>
   </body>
   </html>
